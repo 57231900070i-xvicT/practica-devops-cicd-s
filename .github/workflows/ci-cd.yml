@@ -5,6 +5,10 @@ on:
     branches:
       - master
 
+  pull_request:
+    branches:
+      - master
+
 jobs:
 
   test:
@@ -12,6 +16,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+
       - name: Descargar código
         uses: actions/checkout@v4
 
@@ -23,32 +28,16 @@ jobs:
         run: |
           grep "Aplicación DevOps" index.html
 
-
   build:
     name: Construir imagen Docker
     needs: test
     runs-on: ubuntu-latest
 
     steps:
+
       - name: Descargar código
         uses: actions/checkout@v4
 
       - name: Construir imagen
         run: |
           docker build -t practica-devops .
-
-
-  deploy:
-    name: Desplegar aplicación
-    needs: build
-    runs-on: self-hosted
-
-    steps:
-      - name: Descargar código
-        uses: actions/checkout@v4
-
-      - name: Desplegar con Docker Compose
-        shell: powershell
-        run: |
-          docker compose down
-          docker compose up -d --build
