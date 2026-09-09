@@ -26,7 +26,7 @@ jobs:
 
       - name: Verificar contenido
         run: |
-          grep "Aplicación DevOps" index.html
+          grep "Atrapa el Cuadro" index.html
 
   build:
     name: Construir imagen Docker
