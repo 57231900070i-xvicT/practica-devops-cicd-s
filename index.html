@@ -3,58 +3,180 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Práctica DevOps CI/CD-1</title>
+    <title>Atrapa el Cuadro</title>
 
     <style>
+        * {
+            box-sizing: border-box;
+        }
+
         body {
             margin: 0;
             font-family: Arial, sans-serif;
-            background: #f4f6f8;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
-
-        .container {
+            background: #111827;
+            color: white;
             text-align: center;
-            background: white;
-            padding: 50px;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
         }
 
         h1 {
-            color: #2c3e50;
+            margin-top: 25px;
         }
 
-        p {
-            color: #555;
+        .panel {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin: 20px 0;
+            font-size: 20px;
+        }
+
+        .dato {
+            background: #1f2937;
+            padding: 10px 20px;
+            border-radius: 8px;
+        }
+
+        #juego {
+            width: 700px;
+            max-width: 90%;
+            height: 450px;
+            margin: auto;
+            background: #f3f4f6;
+            border: 4px solid #374151;
+            border-radius: 10px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        #objetivo {
+            width: 45px;
+            height: 45px;
+            background: #2563eb;
+            position: absolute;
+            border-radius: 8px;
+            cursor: pointer;
+            display: none;
+        }
+
+        button {
+            margin: 20px;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 7px;
+            background: #2563eb;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #1d4ed8;
+        }
+
+        #mensaje {
             font-size: 18px;
-        }
-
-        .status {
-            color: green;
-            font-weight: bold;
+            min-height: 25px;
         }
     </style>
-
 </head>
 
 <body>
 
-    <div class="container">
+    <h1>Atrapa el Cuadro</h1>
 
-        <h1>🚀 Aplicación DevOps</h1>
+    <div class="panel">
+        <div class="dato">
+            Puntos: <span id="puntos">0</span>
+        </div>
 
-        <p>Mi aplicación se despliega automáticamente mediante CI/CD.</p>
-
-        <p class="status">
-            ● Sistema funcionando correctamente
-        </p>
-
+        <div class="dato">
+            Tiempo: <span id="tiempo">30</span>
+        </div>
     </div>
+
+    <div id="mensaje">
+        Presiona iniciar para comenzar
+    </div>
+
+    <button id="iniciar">Iniciar juego</button>
+
+    <div id="juego">
+        <div id="objetivo"></div>
+    </div>
+
+    <script>
+        const juego = document.getElementById("juego");
+        const objetivo = document.getElementById("objetivo");
+        const puntosTexto = document.getElementById("puntos");
+        const tiempoTexto = document.getElementById("tiempo");
+        const mensaje = document.getElementById("mensaje");
+        const botonIniciar = document.getElementById("iniciar");
+
+        let puntos = 0;
+        let tiempo = 30;
+        let intervalo;
+        let jugando = false;
+
+        function moverObjetivo() {
+            const maxX = juego.clientWidth - objetivo.offsetWidth;
+            const maxY = juego.clientHeight - objetivo.offsetHeight;
+
+            const x = Math.floor(Math.random() * maxX);
+            const y = Math.floor(Math.random() * maxY);
+
+            objetivo.style.left = x + "px";
+            objetivo.style.top = y + "px";
+        }
+
+        function iniciarJuego() {
+            puntos = 0;
+            tiempo = 30;
+            jugando = true;
+
+            puntosTexto.textContent = puntos;
+            tiempoTexto.textContent = tiempo;
+
+            mensaje.textContent = "Haz clic en el cuadro azul";
+            objetivo.style.display = "block";
+
+            moverObjetivo();
+
+            clearInterval(intervalo);
+
+            intervalo = setInterval(() => {
+                tiempo--;
+
+                tiempoTexto.textContent = tiempo;
+
+                if (tiempo <= 0) {
+                    terminarJuego();
+                }
+            }, 1000);
+        }
+
+        function terminarJuego() {
+            jugando = false;
+
+            clearInterval(intervalo);
+
+            objetivo.style.display = "none";
+
+            mensaje.textContent =
+                "Juego terminado. Puntuación final: " + puntos;
+        }
+
+        objetivo.addEventListener("click", () => {
+            if (!jugando) return;
+
+            puntos++;
+
+            puntosTexto.textContent = puntos;
+
+            moverObjetivo();
+        });
+
+        botonIniciar.addEventListener("click", iniciarJuego);
+    </script>
 
 </body>
 </html>
